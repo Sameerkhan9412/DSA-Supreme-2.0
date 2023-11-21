@@ -17,6 +17,9 @@ public:
         this->data = data;
         this->next = NULL;
     }
+    ~Node(){
+        cout<<"destructor called  for "<<this->data<<endl;
+    }
 };
 
 void PrintLinkedList(Node *head)
@@ -72,12 +75,12 @@ void insertAtTail(Node *&head, Node *&tail, int data)
         tail = newNode;
     }
 }
-int getLength(Node* head){
+int getLength(Node* &head){
     Node* temp=head;
     int length=0;
-    while(temp->next!=NULL){
-        length++;
+    while(temp!=NULL){
         temp=temp->next;
+        length++;
     }
     return length;
 }
@@ -110,15 +113,81 @@ void InsertAtPosition(Node* &head,Node* &tail,int data,int position){
 
 }
 
+void deleteNode(Node* &head,Node* &tail,int position){
+
+    // empty list
+    if(head==NULL){
+        cout<<"Connot delete, List is empty"<<endl;
+        return;
+    }
+
+    if(head==tail){
+        // single element
+        Node* temp=head;
+        delete temp;
+        head=NULL;
+        tail=NULL;
+    }
+    
+    int len=getLength(head);
+    // delete from head
+    if(position==1){
+        // first node ko delete krdo
+        Node* temp=head;
+        head=temp->next;
+        temp->next=NULL;
+        delete temp;
+    }
+    else if(position==len){
+        // last node ko deelte krdo
+        
+        // find prev
+        Node* prev=head;
+        while(prev->next!=tail){
+            prev=prev->next;
+        }
+
+        // prev node ka link null kro
+        prev->next=NULL;
+
+        // node delete kro
+        delete tail;
+
+        // update tail
+        tail=prev;
+        
+    }
+    else{
+        // middle se node delete kro
+
+        // step1: set krdo prev/curr pointers ko
+        Node* prev=NULL;
+        Node* curr=head;
+        while(position!=1){
+            position--;
+            prev=curr;
+            curr=curr->next;
+        }
+
+        // step2: prev->next me curr ka next node add kro
+        prev->next=curr->next;
+
+        // step3: node isolate krdo
+        curr->next=NULL;
+        // step4: delete node
+        delete curr;
+    }
+}
+
 int main()
 {
     cout << "i am inside main functions" << endl;
     // Node a;     //static allocation
-    Node *first = new Node(1);  // dynamic allocation
-    Node *second = new Node(2); // dynamic allocation
-    Node *third = new Node(3);
-    Node *forth = new Node(4);
-    Node *fifth = new Node(5);
+    Node *first = new Node(100);  // dynamic allocation
+    Node *second = new Node(200); // dynamic allocation
+    Node *third = new Node(300);
+    Node *forth = new Node(400);
+    Node *fifth = new Node(500);
     Node *tail = fifth;
 
     first->next = second;
@@ -132,34 +201,34 @@ int main()
     cout << "tranverse the entire LL:" << endl;
     PrintLinkedList(head);
 
-    insertAtHead(head, tail, 500);
-    PrintLinkedList(head);
-
-    insertAtTail(head, tail, 599);
-    PrintLinkedList(head);
-
-
-    InsertAtPosition(head,tail,10,1);
-    PrintLinkedList(head);
-
-    InsertAtPosition(head,tail,1090,29);
-    PrintLinkedList(head);
-
-    InsertAtPosition(head,tail,2021,799);
-    PrintLinkedList(head);
-
-    InsertAtPosition(head,tail,2021,-3);
-    PrintLinkedList(head);
-
-
-    // InsertAtPosition(head,tail,10,5);
+    // insertAtHead(head, tail, 500);
     // PrintLinkedList(head);
 
-    // InsertAtPosition(head,tail,10000,1);
+    // insertAtTail(head, tail, 599);
     // PrintLinkedList(head);
 
-    // InsertAtPosition(head,tail,7000,2);
+
+    // InsertAtPosition(head,tail,10,1);
     // PrintLinkedList(head);
+
+    // InsertAtPosition(head,tail,1090,29);
+    // PrintLinkedList(head);
+
+    // InsertAtPosition(head,tail,2021,799);
+    // PrintLinkedList(head);
+
+    // InsertAtPosition(head,tail,2021,-3);
+    // PrintLinkedList(head);
+
+    // ------------------------------------------------------------------------------
+    // testing for deletion
+    // --------------------------------------------------------------------------------
+
+    // deleteNode(head,tail,1);
+    // deleteNode(head,tail,5);
+    deleteNode(head,tail,3);
+    PrintLinkedList(head);
+
 
     return 0;
 }
